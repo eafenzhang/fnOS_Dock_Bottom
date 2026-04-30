@@ -17,5 +17,11 @@
       "css": ["dock.css"],
       "run_at": "document_start"
     }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["dock.css"],
+      "matches": ["*://*/*"]
+    }
   ]
 }
