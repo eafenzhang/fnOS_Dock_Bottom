@@ -71,21 +71,35 @@
       transition: transform 0.2s;
     }
     .toggle.active::after { transform: translateX(20px); }
-    .debug {
-      font-size: 11px;
-      color: var(--muted);
-      padding: 8px 0;
+    .footer {
+      padding-top: 12px;
       border-top: 1px solid var(--card-border);
-      word-break: break-all;
-      max-height: 100px;
-      overflow-y: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
+    .update-btn {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--muted);
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .update-btn:hover {
+      background: var(--switch-on);
+      color: #fff;
+      border-color: var(--switch-on);
+    }
+    .status { font-size: 11px; color: var(--muted); }
   </style>
 </head>
 <body>
   <div class="header">
     <span class="title">fnOS Dock Bottom</span>
-    <span class="version">v1.0.0</span>
+    <span class="version" id="version">v1.0.0</span>
   </div>
   <div class="row">
     <div>
@@ -94,7 +108,10 @@
     </div>
     <div class="toggle" id="toggleBtn"></div>
   </div>
-  <div class="debug" id="debug">Loading...</div>
+  <div class="footer">
+    <span class="status" id="status"></span>
+    <button class="update-btn" id="checkUpdate">检查更新</button>
+  </div>
   <script src="popup.js"></script>
 </body>
 </html>
