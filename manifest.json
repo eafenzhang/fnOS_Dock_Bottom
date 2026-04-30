@@ -1,11 +1,20 @@
 {
   "manifest_version": 3,
   "name": "fnOS Dock Bottom",
-  "version": "1.0.0",
-  "description": "将 fnOS Dock 栏从左侧移到底部",
+  "version": "1.0.1",
+  "description": "将 fnOS Dock 栏从左侧移到底部 | 支持自动检测更新",
   "author": "eafenzhang",
-  "permissions": ["storage", "activeTab"],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": ["storage", "activeTab", "alarms", "notifications"],
   "host_permissions": ["*://*/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_popup": "popup.html",
     "default_title": "fnOS Dock Bottom"
