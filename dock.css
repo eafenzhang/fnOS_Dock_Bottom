@@ -6,31 +6,31 @@ html.fnos-dock-bottom body .fixed.inset-y-0.left-0 {
   bottom: 0 !important;
   width: 100% !important;
   height: 80px !important;
-  flex-direction: row !important;
 }
 
+/* Dock 主容器 - 改为水平排列 */
 html.fnos-dock-bottom body .box-border.flex.h-full.flex-col.py-3 {
   flex-direction: row !important;
   align-items: center !important;
   justify-content: center !important;
   height: 100% !important;
-  width: 100% !important;
-  padding: 0 !important;
-  gap: 8px;
-}
-
-/* 顶部图标区域 - 改为水平排列 */
-html.fnos-dock-bottom body .flex.flex-col.items-center.border-0\.border-b {
-  flex-direction: row !important;
-  border-b: none !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
-  padding-right: 7px !important;
-  padding-bottom: 0 !important;
   width: auto !important;
-  height: 100% !important;
+  max-width: 100% !important;
+  padding: 0 16px !important;
+  gap: 12px !important;
 }
 
-/* 中间滚动区域 - 改为水平排列 */
+/* 顶部图标区域（桌面/全部应用）- 改为水平排列 */
+html.fnos-dock-bottom body .flex.flex-col.items-center.border-0 {
+  flex-direction: row !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-bottom: none !important;
+  padding-right: 8px !important;
+  height: 100% !important;
+  width: auto !important;
+}
+
+/* 中间滚动区域外层 - 改为水平 */
 html.fnos-dock-bottom body .relative.flex.flex-1.flex-col {
   flex-direction: row !important;
   flex: unset !important;
@@ -38,10 +38,11 @@ html.fnos-dock-bottom body .relative.flex.flex-1.flex-col {
   height: 100% !important;
 }
 
-html.fnos-dock-bottom body .scrollbar-hidden.absolute.inset-0.flex.flex-col.items-end.justify-start.gap-2.overflow-y-auto.pt-2 {
+/* 滚动图标列表 - 改为水平滚动 */
+html.fnos-dock-bottom body .scrollbar-hidden.absolute.inset-0 {
   flex-direction: row !important;
   position: relative !important;
-  inset: unset !important;
+  inset: auto !important;
   overflow-y: hidden !important;
   overflow-x: auto !important;
   align-items: center !important;
@@ -58,5 +59,5 @@ html.fnos-dock-bottom body .flex.flex-col.items-center.justify-between.gap-5.pt-
   padding-top: 0 !important;
   width: auto !important;
   height: 100% !important;
-  gap: 8px !important;
+  gap: 12px !important;
 }

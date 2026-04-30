@@ -1,15 +1,13 @@
 const STORAGE_KEY = 'fnos_dock_bottom_enabled';
+const VERSION_KEY = 'fnos_dock_bottom_version';
 const toggleBtn = document.getElementById('toggleBtn');
 const versionEl = document.getElementById('version');
 const statusEl = document.getElementById('status');
 const checkUpdateBtn = document.getElementById('checkUpdate');
 
 // 显示当前版本
-chrome.runtime.sendMessage({ action: 'getVersion' }, (info) => {
-  if (info) {
-    versionEl.textContent = 'v' + info.currentVersion;
-  }
-});
+const manifest = chrome.runtime.getManifest();
+versionEl.textContent = 'v' + manifest.version;
 
 // 加载初始状态
 chrome.storage.local.get([STORAGE_KEY], (result) => {
@@ -29,22 +27,42 @@ toggleBtn.addEventListener('click', () => {
         action: 'toggle',
         enabled: isActive
       }).catch((err) => {
-        // Content script 可能未注入或未准备好，忽略错误
         console.log('[Popup] Cannot send to content script:', err.message);
       });
     }
   });
 });
 
-// 检查更新按钮
-checkUpdateBtn.addEventListener('click', () => {
-  statusEl.textContent = '检查中...';
+// 检查更新按钮 - 重新加载 CSS
+checkUpdateBtn.addEventListener('click', async () => {
+  statusEl.textContent = '加载中...';
   checkUpdateBtn.disabled = true;
 
-  chrome.runtime.sendMessage({ action: 'checkUpdate' }, () => {
-    setTimeout(() => {
-      statusEl.textContent = '';
-      checkUpdateBtn.disabled = false;
-    }, 2000);
-  });
+  try {
+    // 先获取最新版本号
+    const resp = await fetch('https://raw.githubusercontent.com/eafenzhang/fnOS_Dock_Bottom/main/manifest.json?t=' + Date.now(), { cache: 'no-store' });
+    const manifest = await resp.json();
+
+    // 保存版本号
+    await new Promise(resolve => chrome.storage.local.set({ [VERSION_KEY]: manifest.version }, resolve));
+
+    // 通知当前 tab 重新加载 CSS
+    const tabs = await new Promise(resolve => chrome.tabs.query({ active: true, currentWindow: true }, resolve));
+    if (tabs[0] && tabs[0].id) {
+      await new Promise(resolve => {
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'checkUpdate' }, resolve);
+      });
+    }
+
+    statusEl.textContent = '已更新 v' + manifest.version;
+    versionEl.textContent = 'v' + manifest.version;
+  } catch (e) {
+    statusEl.textContent = '更新失败';
+    console.error(e);
+  }
+
+  setTimeout(() => {
+    statusEl.textContent = '';
+    checkUpdateBtn.disabled = false;
+  }, 2000);
 });
