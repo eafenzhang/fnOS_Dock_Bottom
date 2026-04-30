@@ -1,13 +1,9 @@
 const STORAGE_KEY = 'fnos_dock_bottom_enabled';
-const VERSION_KEY = 'fnos_dock_bottom_version';
 const toggleBtn = document.getElementById('toggleBtn');
 const versionEl = document.getElementById('version');
 const statusEl = document.getElementById('status');
 const checkUpdateBtn = document.getElementById('checkUpdate');
-
-// 显示当前版本
-const manifest = chrome.runtime.getManifest();
-versionEl.textContent = 'v' + manifest.version;
+const MANIFEST_URL = 'https://raw.githubusercontent.com/eafenzhang/fnOS_Dock_Bottom/main/manifest.json';
 
 // 加载初始状态
 chrome.storage.local.get([STORAGE_KEY], (result) => {
@@ -15,6 +11,20 @@ chrome.storage.local.get([STORAGE_KEY], (result) => {
     toggleBtn.classList.add('active');
   }
 });
+
+// 显示版本（优先显示 GitHub 版本）
+async function showVersion() {
+  try {
+    const resp = await fetch(MANIFEST_URL + '?t=' + Date.now(), { cache: 'no-store' });
+    const manifest = await resp.json();
+    versionEl.textContent = 'v' + manifest.version;
+  } catch (e) {
+    // 获取失败显示本地版本
+    const localManifest = chrome.runtime.getManifest();
+    versionEl.textContent = 'v' + localManifest.version;
+  }
+}
+showVersion();
 
 // 点击切换
 toggleBtn.addEventListener('click', () => {
@@ -39,12 +49,9 @@ checkUpdateBtn.addEventListener('click', async () => {
   checkUpdateBtn.disabled = true;
 
   try {
-    // 先获取最新版本号
-    const resp = await fetch('https://raw.githubusercontent.com/eafenzhang/fnOS_Dock_Bottom/main/manifest.json?t=' + Date.now(), { cache: 'no-store' });
+    // 获取最新版本
+    const resp = await fetch(MANIFEST_URL + '?t=' + Date.now(), { cache: 'no-store' });
     const manifest = await resp.json();
-
-    // 保存版本号
-    await new Promise(resolve => chrome.storage.local.set({ [VERSION_KEY]: manifest.version }, resolve));
 
     // 通知当前 tab 重新加载 CSS
     const tabs = await new Promise(resolve => chrome.tabs.query({ active: true, currentWindow: true }, resolve));
