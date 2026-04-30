@@ -4,11 +4,15 @@ html.fnos-dock-bottom body .fixed.inset-y-0.left-0 {
   top: unset !important;
   right: unset !important;
   bottom: 0 !important;
-  width: 100% !important;
+  width: auto !important;
   height: 80px !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
 }
 
-/* Dock 主容器 - 改为水平排列 */
+/* Dock 主容器 - 改为水平排列，自适应宽度 */
 html.fnos-dock-bottom body .box-border.flex.h-full.flex-col.py-3 {
   flex-direction: row !important;
   align-items: center !important;
@@ -52,10 +56,11 @@ html.fnos-dock-bottom body .scrollbar-hidden.absolute.inset-0 {
   width: auto !important;
 }
 
-/* 底部图标区域 - 改为水平排列 */
+/* 底部图标区域 - 改为水平排列，状态栏图标居中 */
 html.fnos-dock-bottom body .flex.flex-col.items-center.justify-between.gap-5.pt-2 {
   flex-direction: row !important;
   justify-content: center !important;
+  align-items: center !important;
   padding-top: 0 !important;
   width: auto !important;
   height: 100% !important;
