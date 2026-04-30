@@ -7,22 +7,9 @@
   const DOCK_CLASS = 'fnos-dock-bottom';
   const STORAGE_KEY = 'fnos_dock_bottom_enabled';
 
-  // 检查存储的状态
-  function loadState() {
-    return new Promise((resolve) => {
-      chrome.storage.local.get([STORAGE_KEY], (result) => {
-        resolve(result[STORAGE_KEY] === true);
-      });
-    });
-  }
-
-  // 保存状态
-  function saveState(enabled) {
-    chrome.storage.local.set({ [STORAGE_KEY]: enabled });
-  }
-
   // 应用/移除 Dock 底部样式
   function applyDockBottom(enabled) {
+    if (!document.documentElement) return;
     if (enabled) {
       document.documentElement.classList.add(DOCK_CLASS);
     } else {
@@ -31,9 +18,13 @@
   }
 
   // 初始化
-  async function init() {
-    const enabled = await loadState();
-    applyDockBottom(enabled);
+  function init() {
+    // 检查存储的状态
+    chrome.storage.local.get([STORAGE_KEY], (result) => {
+      if (result[STORAGE_KEY] === true) {
+        applyDockBottom(true);
+      }
+    });
 
     // 监听 storage 变化
     chrome.storage.onChanged.addListener((changes) => {
@@ -44,20 +35,19 @@
 
     // 监听 popup 消息
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      if (message.action === 'toggle') {
+      if (message && message.action === 'toggle') {
         applyDockBottom(message.enabled);
-        saveState(message.enabled);
+        chrome.storage.local.set({ [STORAGE_KEY]: message.enabled });
         sendResponse({ success: true });
       }
       return true;
     });
   }
 
-  // 立即运行
-  init();
-
-  // DOMContentLoaded 时再次确保类名已应用
+  // DOM 准备好后再初始化（确保 document.documentElement 可用）
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => init());
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 })();
