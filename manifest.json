@@ -6,6 +6,10 @@
   "author": "eafenzhang",
   "permissions": ["storage", "activeTab"],
   "host_permissions": ["*://*/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "fnOS Dock Bottom"
+  },
   "content_scripts": [
     {
       "matches": ["*://*/*"],
