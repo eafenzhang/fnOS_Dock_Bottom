@@ -35,18 +35,29 @@
     const enabled = await loadState();
     applyDockBottom(enabled);
 
-    // 监听存储变化（支持 popup 控制）
+    // 监听 storage 变化
     chrome.storage.onChanged.addListener((changes) => {
       if (changes[STORAGE_KEY]) {
         applyDockBottom(changes[STORAGE_KEY].newValue);
       }
     });
+
+    // 监听 popup 消息
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      if (message.action === 'toggle') {
+        applyDockBottom(message.enabled);
+        saveState(message.enabled);
+        sendResponse({ success: true });
+      }
+      return true;
+    });
   }
 
-  // 在 DOMContentLoaded 时确保类名已应用
+  // 立即运行
+  init();
+
+  // DOMContentLoaded 时再次确保类名已应用
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
+    document.addEventListener('DOMContentLoaded', () => init());
   }
 })();
