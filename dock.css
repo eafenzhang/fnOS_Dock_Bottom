@@ -66,22 +66,19 @@ html.fnos-dock-bottom body .flex.flex-col.items-center.border-0 {
     border-right: 1px solid rgba(255,255,255,0.20) !important;
 }
 
-/* Dock 弹窗/右键菜单 - 居中显示 */
-html.fnos-dock-bottom body .fixed.bottom-0.left-0.right-0 {
+/* ===== Dock 相关弹窗居中（右键菜单、应用详情等） ===== */
+/* 针对固定在底部的弹窗容器 */
+html.fnos-dock-bottom body [class*="fixed"][class*="bottom-0"][class*="left-0"][class*="right-0"] {
     justify-content: center !important;
 }
 
-html.fnos-dock-bottom body .fixed.bottom-0.left-0.right-0 > div {
+html.fnos-dock-bottom body [class*="fixed"][class*="bottom-0"][class*="left-0"][class*="right-0"] > * {
     margin-left: auto !important;
     margin-right: auto !important;
 }
 
-/* 应用图标点击弹窗 - 居中定位 */
-html.fnos-dock-bottom body [class*="fixed"][class*="bottom-0"][class*="left-0"][class*="right-0"]:not(.fixed.inset-y-0.left-0) {
-    justify-content: center !important;
-}
-
-html.fnos-dock-bottom body [class*="fixed"][class*="bottom-0"][class*="left-0"][class*="right-0"]:not(.fixed.inset-y-0.left-0) > div {
-    margin-left: auto !important;
-    margin-right: auto !important;
+/* 针对绝对定位的弹窗 */
+html.fnos-dock-bottom body [class*="absolute"][class*="bottom-0"][class*="left-0"] {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
 }
