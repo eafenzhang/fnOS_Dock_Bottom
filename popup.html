@@ -24,11 +24,7 @@
         --muted: #8b8b8b;
       }
     }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       width: 280px;
       padding: 16px;
@@ -42,14 +38,8 @@
       justify-content: space-between;
       margin-bottom: 16px;
     }
-    .title {
-      font-size: 14px;
-      font-weight: 600;
-    }
-    .version {
-      font-size: 12px;
-      color: var(--muted);
-    }
+    .title { font-size: 14px; font-weight: 600; }
+    .version { font-size: 12px; color: var(--muted); }
     .row {
       display: flex;
       align-items: center;
@@ -57,14 +47,8 @@
       padding: 12px 0;
       border-top: 1px solid var(--card-border);
     }
-    .label {
-      font-size: 13px;
-    }
-    .desc {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
+    .label { font-size: 13px; }
+    .desc { font-size: 11px; color: var(--muted); margin-top: 4px; }
     .toggle {
       position: relative;
       width: 44px;
@@ -74,9 +58,7 @@
       cursor: pointer;
       transition: background 0.2s;
     }
-    .toggle.active {
-      background: var(--switch-on);
-    }
+    .toggle.active { background: var(--switch-on); }
     .toggle::after {
       content: '';
       position: absolute;
@@ -88,9 +70,7 @@
       border-radius: 50%;
       transition: transform 0.2s;
     }
-    .toggle.active::after {
-      transform: translateX(20px);
-    }
+    .toggle.active::after { transform: translateX(20px); }
   </style>
 </head>
 <body>
@@ -103,27 +83,36 @@
       <div class="label">Dock 栏到底部</div>
       <div class="desc">将 Dock 栏从左侧移到底部</div>
     </div>
-    <div class="toggle" id="toggle" onclick="toggle()"></div>
+    <div class="toggle" id="toggleBtn"></div>
   </div>
   <script>
     const STORAGE_KEY = 'fnos_dock_bottom_enabled';
-    const toggle = document.getElementById('toggle');
-    
+    const toggleBtn = document.getElementById('toggleBtn');
+
+    // 加载初始状态
     chrome.storage.local.get([STORAGE_KEY], (result) => {
       if (result[STORAGE_KEY]) {
-        toggle.classList.add('active');
+        toggleBtn.classList.add('active');
       }
     });
-    
-    function toggle() {
-      const isActive = toggle.classList.toggle('active');
+
+    // 点击切换
+    toggleBtn.addEventListener('click', () => {
+      const isActive = toggleBtn.classList.toggle('active');
       chrome.storage.local.set({ [STORAGE_KEY]: isActive });
+
+      // 通知 content script
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs[0]) {
-          chrome.tabs.sendMessage(tabs[0].id, { action: 'toggle', enabled: isActive });
+        if (tabs[0] && tabs[0].id) {
+          chrome.tabs.sendMessage(tabs[0].id, {
+            action: 'toggle',
+            enabled: isActive
+          }, (response) => {
+            console.log('Response:', response);
+          });
         }
       });
-    }
+    });
   </script>
 </body>
 </html>
