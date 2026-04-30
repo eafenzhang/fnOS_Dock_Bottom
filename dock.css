@@ -12,7 +12,7 @@ html.fnos-dock-bottom body .fixed.inset-y-0.left-0 {
   align-items: center !important;
 }
 
-/* Dock 主容器 - 改为水平排列，自适应宽度 */
+/* Dock 主容器 - 水平排列，自适应内容 */
 html.fnos-dock-bottom body .box-border.flex.h-full.flex-col.py-3 {
   flex-direction: row !important;
   align-items: center !important;
@@ -24,7 +24,7 @@ html.fnos-dock-bottom body .box-border.flex.h-full.flex-col.py-3 {
   gap: 12px !important;
 }
 
-/* 顶部图标区域（桌面/全部应用）- 改为水平排列 */
+/* 顶部图标区域（桌面/全部应用）- 水平排列 */
 html.fnos-dock-bottom body .flex.flex-col.items-center.border-0 {
   flex-direction: row !important;
   border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
@@ -32,17 +32,19 @@ html.fnos-dock-bottom body .flex.flex-col.items-center.border-0 {
   padding-right: 8px !important;
   height: 100% !important;
   width: auto !important;
+  align-items: center !important;
 }
 
-/* 中间滚动区域外层 - 改为水平 */
+/* 中间滚动区域外层 - 水平 */
 html.fnos-dock-bottom body .relative.flex.flex-1.flex-col {
   flex-direction: row !important;
   flex: unset !important;
   width: auto !important;
   height: 100% !important;
+  align-items: center !important;
 }
 
-/* 滚动图标列表 - 改为水平滚动 */
+/* 滚动图标列表 - 水平滚动 */
 html.fnos-dock-bottom body .scrollbar-hidden.absolute.inset-0 {
   flex-direction: row !important;
   position: relative !important;
@@ -56,7 +58,7 @@ html.fnos-dock-bottom body .scrollbar-hidden.absolute.inset-0 {
   width: auto !important;
 }
 
-/* 底部图标区域 - 改为水平排列，状态栏图标居中 */
+/* 底部图标区域 - 水平排列，图标上下居中 */
 html.fnos-dock-bottom body .flex.flex-col.items-center.justify-between.gap-5.pt-2 {
   flex-direction: row !important;
   justify-content: center !important;
@@ -65,4 +67,11 @@ html.fnos-dock-bottom body .flex.flex-col.items-center.justify-between.gap-5.pt-
   width: auto !important;
   height: 100% !important;
   gap: 12px !important;
+}
+
+/* 每个图标容器 - 确保图标本身上下居中 */
+html.fnos-dock-bottom body .fixed.inset-y-0.left-0 [class*="h-"][class*="w-"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
