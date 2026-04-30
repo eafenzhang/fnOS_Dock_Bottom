@@ -28,6 +28,9 @@ toggleBtn.addEventListener('click', () => {
       chrome.tabs.sendMessage(tabs[0].id, {
         action: 'toggle',
         enabled: isActive
+      }).catch((err) => {
+        // Content script 可能未注入或未准备好，忽略错误
+        console.log('[Popup] Cannot send to content script:', err.message);
       });
     }
   });
