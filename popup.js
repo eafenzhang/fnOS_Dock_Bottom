@@ -3,7 +3,15 @@ const toggleBtn = document.getElementById('toggleBtn');
 const versionEl = document.getElementById('version');
 const statusEl = document.getElementById('status');
 const checkUpdateBtn = document.getElementById('checkUpdate');
-const MANIFEST_URL = 'https://raw.githubusercontent.com/eafenzhang/fnOS_Dock_Bottom/main/manifest.json';
+const MANIFEST_URL = 'https://raw.githubusercontent.com/eafenzhang/fnOS_Dock_Bottom/main/manifest.json?' + Date.now();
+const CSS_URL = 'https://raw.githubusercontent.com/eafenzhang/fnOS_Dock_Bottom/main/dock.css?' + Date.now();
+
+// 强制禁用缓存
+const noCacheHeaders = {
+  'Cache-Control': 'no-cache, no-store, must-revalidate',
+  'Pragma': 'no-cache',
+  'Expires': '0'
+};
 
 // 加载初始状态
 chrome.storage.local.get([STORAGE_KEY], (result) => {
@@ -12,16 +20,19 @@ chrome.storage.local.get([STORAGE_KEY], (result) => {
   }
 });
 
-// 显示版本（优先显示 GitHub 版本）
+// 显示版本（从 GitHub 获取，失败则显示本地）
 async function showVersion() {
+  versionEl.textContent = 'v?.? (加载中...)';
   try {
-    const resp = await fetch(MANIFEST_URL + '?t=' + Date.now(), { cache: 'no-store' });
+    const resp = await fetch(MANIFEST_URL, { headers: noCacheHeaders });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const manifest = await resp.json();
     versionEl.textContent = 'v' + manifest.version;
+    console.log('[Dock Bottom] GitHub 版本:', manifest.version, '| 本地版本:', chrome.runtime.getManifest().version);
   } catch (e) {
-    // 获取失败显示本地版本
-    const localManifest = chrome.runtime.getManifest();
-    versionEl.textContent = 'v' + localManifest.version;
+    const local = chrome.runtime.getManifest().version;
+    versionEl.textContent = 'v' + local + ' (离线)';
+    console.error('[Dock Bottom] 获取 GitHub 版本失败:', e.message);
   }
 }
 showVersion();
@@ -37,39 +48,44 @@ toggleBtn.addEventListener('click', () => {
         action: 'toggle',
         enabled: isActive
       }).catch((err) => {
-        console.log('[Popup] Cannot send to content script:', err.message);
+        console.log('[Popup] 无法发送到 content script:', err.message);
       });
     }
   });
 });
 
-// 检查更新按钮 - 重新加载 CSS
+// 检查更新按钮
 checkUpdateBtn.addEventListener('click', async () => {
   statusEl.textContent = '加载中...';
   checkUpdateBtn.disabled = true;
 
   try {
     // 获取最新版本
-    const resp = await fetch(MANIFEST_URL + '?t=' + Date.now(), { cache: 'no-store' });
+    const url = MANIFEST_URL + '&t=' + Date.now();
+    const resp = await fetch(url, { headers: noCacheHeaders });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const manifest = await resp.json();
 
     // 通知当前 tab 重新加载 CSS
     const tabs = await new Promise(resolve => chrome.tabs.query({ active: true, currentWindow: true }, resolve));
     if (tabs[0] && tabs[0].id) {
-      await new Promise(resolve => {
-        chrome.tabs.sendMessage(tabs[0].id, { action: 'checkUpdate' }, resolve);
-      });
+      try {
+        await chrome.tabs.sendMessage(tabs[0].id, { action: 'checkUpdate' });
+      } catch (e) {
+        console.log('[Popup] content script 未响应:', e.message);
+      }
     }
 
-    statusEl.textContent = '已更新 v' + manifest.version;
+    statusEl.textContent = '已是最新 v' + manifest.version;
     versionEl.textContent = 'v' + manifest.version;
+    console.log('[Dock Bottom] 更新成功! GitHub v' + manifest.version + ' | 本地 v' + chrome.runtime.getManifest().version);
   } catch (e) {
-    statusEl.textContent = '更新失败';
-    console.error(e);
+    statusEl.textContent = '更新失败: ' + e.message;
+    console.error('[Dock Bottom] 更新失败:', e);
   }
 
   setTimeout(() => {
     statusEl.textContent = '';
     checkUpdateBtn.disabled = false;
-  }, 2000);
+  }, 3000);
 });
