@@ -1,84 +1,62 @@
-/*
- * Dock Layout Bottom - fnOS UI Mods
- * 将 Dock 栏从左侧移到底部（仅位置，不改样式）
- */
-
-/* ===== Dock 容器：从左侧移到底部 ===== */
+/* fnOS Dock 底部定位 - 仅在扩展启用时应用 */
 html.fnos-dock-bottom body .fixed.inset-y-0.left-0 {
-    position: fixed !important;
-    inset: auto !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    top: auto !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 70px !important;
-    z-index: 10 !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    padding: 8px 0 !important;
+  left: unset !important;
+  top: unset !important;
+  right: unset !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 80px !important;
+  flex-direction: row !important;
 }
 
-/* Dock 内部容器 - 水平居中 */
-html.fnos-dock-bottom body .box-border.size-full.py-4.pl-3\.5 {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-/* Dock 边框容器 - 圆角 */
-html.fnos-dock-bottom body .h-full.rounded-md {
-    flex-direction: row !important;
-    display: flex !important;
-    align-items: center !important;
-}
-
-/* Dock 图标排列 - 改为水平 */
 html.fnos-dock-bottom body .box-border.flex.h-full.flex-col.py-3 {
-    flex-direction: row !important;
-    display: flex !important;
-    align-items: center !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 100% !important;
+  width: 100% !important;
+  padding: 0 !important;
+  gap: 8px;
 }
 
-/* Dock 滚动区域 - 水平滚动 */
-html.fnos-dock-bottom body .scrollbar-hidden.absolute.inset-0 {
-    position: relative !important;
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scrollbar-width: none !important;
-    align-items: center !important;
+/* 顶部图标区域 - 改为水平排列 */
+html.fnos-dock-bottom body .flex.flex-col.items-center.border-0\.border-b {
+  flex-direction: row !important;
+  border-b: none !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
+  padding-right: 7px !important;
+  padding-bottom: 0 !important;
+  width: auto !important;
+  height: 100% !important;
 }
 
-/* 滚动条隐藏 */
-html.fnos-dock-bottom body .scrollbar-hidden::-webkit-scrollbar {
-    display: none !important;
+/* 中间滚动区域 - 改为水平排列 */
+html.fnos-dock-bottom body .relative.flex.flex-1.flex-col {
+  flex-direction: row !important;
+  flex: unset !important;
+  width: auto !important;
+  height: 100% !important;
 }
 
-/* 顶部按钮区域（桌面、全部应用）改为水平 */
-html.fnos-dock-bottom body .flex.flex-col.items-center.border-0 {
-    flex-direction: row !important;
-    border-bottom: none !important;
-    border-right: 1px solid rgba(255,255,255,0.20) !important;
+html.fnos-dock-bottom body .scrollbar-hidden.absolute.inset-0.flex.flex-col.items-end.justify-start.gap-2.overflow-y-auto.pt-2 {
+  flex-direction: row !important;
+  position: relative !important;
+  inset: unset !important;
+  overflow-y: hidden !important;
+  overflow-x: auto !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 0 !important;
+  height: 100% !important;
+  width: auto !important;
 }
 
-/* ===== Dock 相关弹窗居中（右键菜单、应用详情等） ===== */
-/* 针对固定在底部的弹窗容器 */
-html.fnos-dock-bottom body [class*="fixed"][class*="bottom-0"][class*="left-0"][class*="right-0"] {
-    justify-content: center !important;
-}
-
-html.fnos-dock-bottom body [class*="fixed"][class*="bottom-0"][class*="left-0"][class*="right-0"] > * {
-    margin-left: auto !important;
-    margin-right: auto !important;
-}
-
-/* 针对绝对定位的弹窗 */
-html.fnos-dock-bottom body [class*="absolute"][class*="bottom-0"][class*="left-0"] {
-    left: 50% !important;
-    transform: translateX(-50%) !important;
+/* 底部图标区域 - 改为水平排列 */
+html.fnos-dock-bottom body .flex.flex-col.items-center.justify-between.gap-5.pt-2 {
+  flex-direction: row !important;
+  justify-content: center !important;
+  padding-top: 0 !important;
+  width: auto !important;
+  height: 100% !important;
+  gap: 8px !important;
 }
