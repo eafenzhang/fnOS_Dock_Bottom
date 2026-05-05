@@ -1,20 +1,24 @@
 /* fnOS Dock 底部定位 - 仅在扩展启用时应用 */
 html.fnos-dock-bottom body .fixed.inset-y-0.left-0 {
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  top: unset !important;
-  right: unset !important;
+  left: 0 !important;
+  transform: none !important;
+  right: 0 !important;
   bottom: 0 !important;
-  width: auto !important;
+  width: 100% !important;
   height: 80px !important;
-  max-width: 90vw !important;
   margin: 0 !important;
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
+  z-index: 9999 !important;
 }
 
-/* Dock 主容器 - 水平排列，自适应内容 */
+/* 隐藏原左侧 Dock 占用的空间 - 让页面内容左移 */
+html.fnos-dock-bottom body > div:first-child {
+  margin-left: 0 !important;
+}
+
+/* Dock 主容器 - 水平排列，居中显示 */
 html.fnos-dock-bottom body .box-border.flex.h-full.flex-col.py-3 {
   flex-direction: row !important;
   align-items: center !important;
@@ -92,4 +96,17 @@ html.fnos-dock-bottom body .flex.flex-col.items-center.justify-between.gap-5.pt-
   justify-content: center !important;
   padding-top: 4px !important;
   padding-bottom: 4px !important;
+}
+
+/* fnOS 弹窗居中显示 */
+html.fnos-dock-bottom body .fixed.inset-0.flex.items-center.justify-center {
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+html.fnos-dock-bottom body .fixed.inset-0.flex.items-center.justify-center > div {
+  left: 50% !important;
+  transform: translateX(-50%) !important;
 }
