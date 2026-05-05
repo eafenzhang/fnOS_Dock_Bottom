@@ -17,17 +17,25 @@ html.fnos-dock-bottom body .fixed.inset-y-0.left-0 {
   z-index: 9999 !important;
 }
 
-/* 确保 body 没有 padding-top 影响 */
 html.fnos-dock-bottom body {
   padding-bottom: 80px !important;
 }
 
-/* 隐藏原左侧 Dock 的 top/left 定位 */
-html.fnos-dock-bottom body .fixed.inset-y-0.left-0 {
-  isolation: isolate;
+/* 去掉原左侧 dock 占用的空间 pl-[66px] */
+html.fnos-dock-bottom body [style*="padding-left: 66px"],
+html.fnos-dock-bottom body [style*="pl-66px"],
+html.fnos-dock-bottom [class*="pl-[66px]"] {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+  left: 0 !important;
 }
 
-/* Dock 主容器 - 水平排列，居中 */
+html.fnos-dock-bottom body > div:first-child {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+/* Dock 主容器 */
 html.fnos-dock-bottom body .box-border.flex.h-full.flex-col.py-3 {
   flex-direction: row !important;
   align-items: center !important;
@@ -38,7 +46,7 @@ html.fnos-dock-bottom body .box-border.flex.h-full.flex-col.py-3 {
   gap: 16px !important;
 }
 
-/* 顶部图标区域 - 水平排列 */
+/* 顶部图标区域 */
 html.fnos-dock-bottom body .flex.flex-col.items-center.border-0 {
   flex-direction: row !important;
   border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
@@ -84,14 +92,13 @@ html.fnos-dock-bottom body .flex.flex-col.items-center.justify-between.gap-5.pt-
   gap: 16px !important;
 }
 
-/* 图标容器居中 */
+/* 图标容器 */
 html.fnos-dock-bottom body .fixed.inset-y-0.left-0 [class*="h-"][class*="w-"] {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
 }
 
-/* 底部图标容器 */
 html.fnos-dock-bottom body .flex.flex-col.items-center.justify-between.gap-5.pt-2 > div {
   display: flex !important;
   align-items: center !important;
