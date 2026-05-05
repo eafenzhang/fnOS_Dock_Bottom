@@ -1,21 +1,16 @@
-/* fnOS Dock 底部定位 - 仅在扩展启用时应用 */
+/* fnOS Dock 底部定位 - 居中显示在底部 */
 html.fnos-dock-bottom body .fixed.inset-y-0.left-0 {
   left: 50% !important;
   transform: translateX(-50%) !important;
   right: auto !important;
   bottom: 0 !important;
   width: auto !important;
-  max-width: 90vw !important;
+  max-width: 95vw !important;
   height: 80px !important;
   margin: 0 !important;
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
-}
-
-/* 隐藏原左侧 Dock 占用空间 - 让页面内容不偏移 */
-html.fnos-dock-bottom body .fixed.inset-y-0.left-0 {
-  position: fixed !important;
   z-index: 9999 !important;
 }
 
@@ -27,8 +22,8 @@ html.fnos-dock-bottom body .box-border.flex.h-full.flex-col.py-3 {
   height: 100% !important;
   width: auto !important;
   max-width: 100% !important;
-  padding: 0 16px !important;
-  gap: 12px !important;
+  padding: 0 20px !important;
+  gap: 16px !important;
 }
 
 /* 顶部图标区域（桌面/全部应用）- 水平排列 */
@@ -36,7 +31,7 @@ html.fnos-dock-bottom body .flex.flex-col.items-center.border-0 {
   flex-direction: row !important;
   border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
   border-bottom: none !important;
-  padding-right: 8px !important;
+  padding-right: 12px !important;
   height: 100% !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
@@ -80,7 +75,7 @@ html.fnos-dock-bottom body .flex.flex-col.items-center.justify-between.gap-5.pt-
   padding-bottom: 0 !important;
   width: auto !important;
   height: 100% !important;
-  gap: 12px !important;
+  gap: 16px !important;
 }
 
 /* 图标容器 - 确保图标本身垂直居中 */
@@ -99,14 +94,33 @@ html.fnos-dock-bottom body .flex.flex-col.items-center.justify-between.gap-5.pt-
   padding-bottom: 4px !important;
 }
 
-/* fnOS 弹窗居中显示 */
-html.fnos-dock-bottom body .fixed.inset-0.flex.items-center.justify-center {
-  left: 0 !important;
-  transform: none !important;
-  width: 100% !important;
-  height: 100% !important;
+/* 提示文字样式（底部 Dock 适配） */
+html.fnos-dock-bottom body [class*="tooltip"],
+html.fnos-dock-bottom body [class*="Tooltip"],
+html.fnos-dock-bottom body [data-tooltip] {
+  position: absolute !important;
+  bottom: 100% !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  margin-bottom: 8px !important;
+  padding: 4px 8px !important;
+  background: rgba(0, 0, 0, 0.85) !important;
+  color: #fff !important;
+  font-size: 12px !important;
+  border-radius: 4px !important;
+  white-space: nowrap !important;
+  z-index: 10000 !important;
 }
 
+/* Tabs 选中样式（底部 Dock 适配） */
+html.fnos-dock-bottom body [class*="tab"][class*="active"],
+html.fnos-dock-bottom body [role="tab"][aria-selected="true"] {
+  background: rgba(0, 102, 255, 0.3) !important;
+  border-bottom: 2px solid #0066ff !important;
+  border-radius: 4px 4px 0 0 !important;
+}
+
+/* 弹窗居中显示 */
 html.fnos-dock-bottom body .fixed.inset-0.flex.items-center.justify-center > div {
   position: fixed !important;
   top: 50% !important;
@@ -114,4 +128,26 @@ html.fnos-dock-bottom body .fixed.inset-0.flex.items-center.justify-center > div
   transform: translate(-50%, -50%) !important;
   max-width: 90vw !important;
   max-height: 90vh !important;
+  z-index: 10001 !important;
+}
+
+/* 页面刷新时 Dock 动画 */
+html.fnos-dock-bottom body .fixed.inset-y-0.left-0 {
+  animation: fnosDockSlideUp 0.3s ease-out;
+}
+
+@keyframes fnosDockSlideUp {
+  from {
+    transform: translateX(-50%) translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* 页面底部留出 Dock 空间 */
+html.fnos-dock-bottom body {
+  padding-bottom: 80px !important;
 }
