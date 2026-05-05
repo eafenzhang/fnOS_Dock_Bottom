@@ -1,112 +1,130 @@
 // fnOS Dock Bottom - Content Script
-// 启用后从 GitHub 加载 CSS，点击检查更新重新加载 CSS
 
 (function() {
   if (window.top !== window) return;
 
   const DOCK_CLASS = 'fnos-dock-bottom';
   const STORAGE_KEY = 'fnos_dock_bottom_enabled';
-  const CSS_URL = 'https://raw.githubusercontent.com/eafenzhang/fnOS_Dock_Bottom/main/dock.css?' + Date.now();
-  const MANIFEST_URL = 'https://raw.githubusercontent.com/eafenzhang/fnOS_Dock_Bottom/main/manifest.json?' + Date.now();
+  const CSS_URL = 'https://raw.githubusercontent.com/eafenzhang/fnOS_Dock_Bottom/main/dock.css';
+  const DEBUG_MODE = true;
 
-  // 强制禁用缓存
-  const noCacheHeaders = {
-    'Cache-Control': 'no-cache, no-store, must-revalidate',
-    'Pragma': 'no-cache',
-    'Expires': '0'
-  };
+  const CRITICAL_SELECTORS = [
+    '.fixed.inset-y-0.left-0',
+    '.box-border.flex.h-full.flex-col.py-3',
+    '.flex.flex-col.items-center.border-0'
+  ];
 
-  // 从 GitHub 加载 CSS
-  async function loadCssFromGitHub() {
-    console.log('[Dock Bottom] 正在从 GitHub 加载 CSS...');
-    try {
-      const response = await fetch(CSS_URL, { headers: noCacheHeaders });
-      if (!response.ok) {
-        console.error('[Dock Bottom] CSS 响应失败:', response.status);
-        return null;
-      }
-      const css = await response.text();
-
-      // 移除旧样式
-      const oldStyle = document.getElementById('fnos-dock-bottom-css');
-      if (oldStyle) {
-        oldStyle.remove();
-        console.log('[Dock Bottom] 已移除旧样式');
-      }
-
-      // 注入新样式
-      const style = document.createElement('style');
-      style.id = 'fnos-dock-bottom-css';
-      style.textContent = css;
-      document.head.appendChild(style);
-      console.log('[Dock Bottom] CSS 加载成功，长度:', css.length, '字符');
-      return css;
-    } catch (e) {
-      console.error('[Dock Bottom] CSS 加载失败:', e.message);
-      return null;
-    }
+  function log(...args) {
+    if (DEBUG_MODE) console.log('[Dock Bottom]', ...args);
   }
 
-  // 应用/移除 Dock 底部样式
+  const FALLBACK_CSS = `
+html.fnos-dock-bottom body .fixed.inset-y-0.left-0 {
+  left: unset !important; top: unset !important; right: unset !important;
+  bottom: 0 !important; width: auto !important; height: 80px !important;
+  margin: 0 auto !important; display: flex !important;
+  justify-content: center !important; align-items: center !important;
+}
+html.fnos-dock-bottom body .box-border.flex.h-full.flex-col.py-3 {
+  flex-direction: row !important; align-items: center !important;
+  justify-content: center !important; height: 100% !important; width: auto !important;
+  max-width: 100% !important; padding: 0 16px !important; gap: 12px !important;
+}
+html.fnos-dock-bottom body .flex.flex-col.items-center.border-0 {
+  flex-direction: row !important; border-right: 1px solid rgba(255,255,255,0.2) !important;
+  border-bottom: none !important; padding-right: 8px !important;
+  height: 100% !important; width: auto !important; align-items: center !important;
+}
+html.fnos-dock-bottom body .relative.flex.flex-1.flex-col {
+  flex-direction: row !important; flex: unset !important; width: auto !important;
+  height: 100% !important; align-items: center !important;
+}
+html.fnos-dock-bottom body .scrollbar-hidden.absolute.inset-0 {
+  flex-direction: row !important; position: relative !important; inset: auto !important;
+  overflow-y: hidden !important; overflow-x: auto !important;
+  align-items: center !important; justify-content: flex-start !important;
+  padding: 0 !important; height: 100% !important; width: auto !important;
+}
+html.fnos-dock-bottom body .flex.flex-col.items-center.justify-between.gap-5.pt-2 {
+  flex-direction: row !important; justify-content: center !important;
+  align-items: center !important; padding-top: 0 !important; width: auto !important;
+  height: 100% !important; gap: 12px !important;
+}
+html.fnos-dock-bottom body .fixed.inset-y-0.left-0 [class*="h-"][class*="w-"] {
+  display: flex !important; align-items: center !important; justify-content: center !important;
+}`;
+
+  function injectCss(css, source) {
+    const oldStyle = document.getElementById('fnos-dock-bottom-css');
+    if (oldStyle) { if (oldStyle.textContent === css) { log(source + ': same, skip'); return false; } oldStyle.remove(); }
+    const style = document.createElement('style');
+    style.id = 'fnos-dock-bottom-css';
+    style.textContent = css;
+    document.head.appendChild(style);
+    log(source + ': injected');
+    return true;
+  }
+
+  async function loadCssFromGitHub() {
+    log('Loading from GitHub...');
+    try {
+      const response = await fetch(CSS_URL + '?' + Date.now(), { cache: 'no-store' });
+      if (!response.ok) { log('GitHub failed:', response.status); return false; }
+      const css = await response.text();
+      if (css && css.length > 100) { injectCss(css, 'GitHub'); return true; }
+    } catch (e) { log('GitHub error:', e.message); }
+    return false;
+  }
+
+  function checkDockElements() {
+    const found = [], missing = [];
+    for (const sel of CRITICAL_SELECTORS) {
+      try { document.querySelector(sel) ? found.push(sel) : missing.push(sel); } catch (e) { missing.push(sel); }
+    }
+    return { found, missing };
+  }
+
   function applyDockBottom(enabled) {
     if (!document.documentElement) return;
-
     if (enabled) {
       document.documentElement.classList.add(DOCK_CLASS);
-      console.log('[Dock Bottom] 已启用 Dock 底部样式');
+      log('Enabled, class added');
+      injectCss(FALLBACK_CSS, 'Fallback');
       loadCssFromGitHub();
     } else {
       document.documentElement.classList.remove(DOCK_CLASS);
-      const oldStyle = document.getElementById('fnos-dock-bottom-css');
-      if (oldStyle) oldStyle.remove();
-      console.log('[Dock Bottom] 已禁用 Dock 底部样式');
+      const old = document.getElementById('fnos-dock-bottom-css');
+      if (old) old.remove();
+      log('Disabled');
     }
   }
 
-  // 初始化
   function init() {
-    console.log('[Dock Bottom] Content Script 初始化, 扩展版本:', chrome.runtime.getManifest().version);
-
-    // 检查存储的状态
+    log('Init, version:', chrome.runtime.getManifest().version);
+    log('Page:', window.location.href);
     chrome.storage.local.get([STORAGE_KEY], (result) => {
-      if (result[STORAGE_KEY] === true) {
-        console.log('[Dock Bottom] 检测到启用状态，应用样式...');
-        applyDockBottom(true);
-      } else {
-        console.log('[Dock Bottom] 未启用，不应用样式');
-      }
+      if (result[STORAGE_KEY] === true) { log('Enabled in storage'); applyDockBottom(true); }
+      else { log('Not enabled'); }
     });
-
-    // 监听 storage 变化
     chrome.storage.onChanged.addListener((changes) => {
-      if (changes[STORAGE_KEY]) {
-        console.log('[Dock Bottom] Storage 变化:', changes[STORAGE_KEY].newValue);
-        applyDockBottom(changes[STORAGE_KEY].newValue);
-      }
+      if (changes[STORAGE_KEY]) applyDockBottom(changes[STORAGE_KEY].newValue);
     });
-
-    // 监听 popup 消息
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      console.log('[Dock Bottom] 收到消息:', message.action);
       if (message && message.action === 'toggle') {
         applyDockBottom(message.enabled);
         chrome.storage.local.set({ [STORAGE_KEY]: message.enabled });
         sendResponse({ success: true });
+        return true;
       }
-      if (message && message.action === 'checkUpdate') {
-        loadCssFromGitHub().then(css => {
-          sendResponse({ success: !!css });
-        });
+      if (message && message.action === 'getStatus') {
+        const { found, missing } = checkDockElements();
+        sendResponse({ enabled: document.documentElement.classList.contains(DOCK_CLASS), hasStyle: !!document.getElementById('fnos-dock-bottom-css'), foundCount: found.length, pageUrl: window.location.href });
         return true;
       }
       return true;
     });
   }
 
-  // DOM 准备好后再初始化
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); }
+  else { init(); }
 })();
