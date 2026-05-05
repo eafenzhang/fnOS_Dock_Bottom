@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "fnOS Dock Bottom",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "将 fnOS Dock 栏从左侧移到底部 | 点击检查更新加载最新样式",
   "author": "eafenzhang",
   "icons": {
