@@ -1,21 +1,22 @@
 /* fnOS Dock 底部定位 - 仅在扩展启用时应用 */
 html.fnos-dock-bottom body .fixed.inset-y-0.left-0 {
-  left: 0 !important;
-  transform: none !important;
-  right: 0 !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  right: auto !important;
   bottom: 0 !important;
-  width: 100% !important;
+  width: auto !important;
+  max-width: 90vw !important;
   height: 80px !important;
   margin: 0 !important;
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
-  z-index: 9999 !important;
 }
 
-/* 隐藏原左侧 Dock 占用的空间 - 让页面内容左移 */
-html.fnos-dock-bottom body > div:first-child {
-  margin-left: 0 !important;
+/* 隐藏原左侧 Dock 占用空间 - 让页面内容不偏移 */
+html.fnos-dock-bottom body .fixed.inset-y-0.left-0 {
+  position: fixed !important;
+  z-index: 9999 !important;
 }
 
 /* Dock 主容器 - 水平排列，居中显示 */
@@ -100,13 +101,17 @@ html.fnos-dock-bottom body .flex.flex-col.items-center.justify-between.gap-5.pt-
 
 /* fnOS 弹窗居中显示 */
 html.fnos-dock-bottom body .fixed.inset-0.flex.items-center.justify-center {
-  left: 50% !important;
-  transform: translateX(-50%) !important;
+  left: 0 !important;
+  transform: none !important;
   width: 100% !important;
   height: 100% !important;
 }
 
 html.fnos-dock-bottom body .fixed.inset-0.flex.items-center.justify-center > div {
+  position: fixed !important;
+  top: 50% !important;
   left: 50% !important;
-  transform: translateX(-50%) !important;
+  transform: translate(-50%, -50%) !important;
+  max-width: 90vw !important;
+  max-height: 90vh !important;
 }
