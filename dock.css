@@ -21,16 +21,32 @@ html.fnos-dock-bottom body {
   padding-bottom: 80px !important;
 }
 
-/* 去掉原左侧 dock 占用的空间 pl-[66px] */
-html.fnos-dock-bottom body [style*="padding-left: 66px"],
-html.fnos-dock-bottom body [style*="pl-66px"],
-html.fnos-dock-bottom [class*="pl-[66px]"] {
+/* 强制去除左侧 padding - 使用 !important 覆盖所有规则 */
+html.fnos-dock-bottom body [style*="66px"],
+html.fnos-dock-bottom body [style*="padding-left"] {
+  padding-left: 0 !important;
+  left: 0 !important;
+}
+
+/* 去除所有可能的左侧占位 - 匹配任何包含 pl- 的类 */
+html.fnos-dock-bottom [class*="pl-"],
+html.fnos-dock-bottom [class*="pl-"]:not([class*="pl-0"]),
+html.fnos-dock-bottom body [class*="pl-["] {
   padding-left: 0 !important;
   margin-left: 0 !important;
   left: 0 !important;
 }
 
-html.fnos-dock-bottom body > div:first-child {
+/* 覆盖页面主体容器的左侧边距 */
+html.fnos-dock-bottom body > div:first-child,
+html.fnos-dock-bottom body > section:first-child,
+html.fnos-dock-bottom body > main:first-child {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+/* 通用：去除 body 下所有直接子元素的左侧 margin */
+html.fnos-dock-bottom body > * {
   margin-left: 0 !important;
   padding-left: 0 !important;
 }
