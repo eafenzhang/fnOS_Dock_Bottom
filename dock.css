@@ -1,12 +1,14 @@
 /* fnOS Dock 底部定位 - 仅在扩展启用时应用 */
 html.fnos-dock-bottom body .fixed.inset-y-0.left-0 {
-  left: unset !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
   top: unset !important;
   right: unset !important;
   bottom: 0 !important;
   width: auto !important;
   height: 80px !important;
-  margin: 0 auto !important;
+  max-width: 90vw !important;
+  margin: 0 !important;
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
@@ -31,8 +33,11 @@ html.fnos-dock-bottom body .flex.flex-col.items-center.border-0 {
   border-bottom: none !important;
   padding-right: 8px !important;
   height: 100% !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
   width: auto !important;
   align-items: center !important;
+  justify-content: center !important;
 }
 
 /* 中间滚动区域外层 - 水平 */
@@ -42,9 +47,12 @@ html.fnos-dock-bottom body .relative.flex.flex-1.flex-col {
   width: auto !important;
   height: 100% !important;
   align-items: center !important;
+  justify-content: center !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 
-/* 滚动图标列表 - 水平滚动 */
+/* 滚动图标列表 - 水平滚动，图标垂直居中 */
 html.fnos-dock-bottom body .scrollbar-hidden.absolute.inset-0 {
   flex-direction: row !important;
   position: relative !important;
@@ -53,25 +61,35 @@ html.fnos-dock-bottom body .scrollbar-hidden.absolute.inset-0 {
   overflow-x: auto !important;
   align-items: center !important;
   justify-content: flex-start !important;
-  padding: 0 !important;
+  padding: 8px 0 !important;
   height: 100% !important;
   width: auto !important;
 }
 
-/* 底部图标区域 - 水平排列，图标上下居中 */
+/* 底部图标区域 - 水平排列，图标垂直居中 */
 html.fnos-dock-bottom body .flex.flex-col.items-center.justify-between.gap-5.pt-2 {
   flex-direction: row !important;
   justify-content: center !important;
   align-items: center !important;
   padding-top: 0 !important;
+  padding-bottom: 0 !important;
   width: auto !important;
   height: 100% !important;
   gap: 12px !important;
 }
 
-/* 每个图标容器 - 确保图标本身上下居中 */
+/* 图标容器 - 确保图标本身垂直居中 */
 html.fnos-dock-bottom body .fixed.inset-y-0.left-0 [class*="h-"][class*="w-"] {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+}
+
+/* 底部图标区域内的具体图标容器 - 垂直居中 */
+html.fnos-dock-bottom body .flex.flex-col.items-center.justify-between.gap-5.pt-2 > div {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
 }
